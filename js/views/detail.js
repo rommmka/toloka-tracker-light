@@ -99,11 +99,15 @@ export async function renderDetail(el, { id }) {
           tagsFor(r)),
         h('span', { class: 's' }, fmtSize(r.sizeBytes)));
     }));
-  const tolokaBtn = h('a', { class: 'btn primary block', target: '_blank', rel: 'noopener noreferrer' });
+  const tolokaBtn = h('a', { class: 'btn primary', target: '_blank', rel: 'noopener noreferrer', style: 'flex:1 1 200px' });
+  // .torrent straight from toloka: downloads for visitors signed in there, others land on its login page
+  const torrentBtn = h('a', { class: 'btn ink', target: '_blank', rel: 'noopener noreferrer', style: 'flex:1 1 160px' }, icon(ICON.down, 18), 'Завантажити торент');
   function syncPicker() {
     opts.querySelectorAll('input').forEach((i) => { i.checked = Number(i.value) === selected.topicId; });
     tolokaBtn.href = selected.url;
     tolokaBtn.textContent = `Відкрити на toloka · ${fmtSize(selected.sizeBytes)} ↗`;
+    torrentBtn.hidden = !selected.torrentUrl;
+    if (selected.torrentUrl) torrentBtn.href = selected.torrentUrl;
     audioDd.textContent = audioText(selected) || '—';
     subsDd.textContent = selected.subs || '—';
   }
@@ -112,8 +116,8 @@ export async function renderDetail(el, { id }) {
   aside.append(h('section', { class: 'tile', style: 'padding:20px;gap:10px' },
     h('h2', { class: 'h-tile', style: 'font-size:20px' }, `Якість · ${c.releases.length} ${c.releases.length === 1 ? 'роздача' : c.releases.length < 5 ? 'роздачі' : 'роздач'}`),
     opts,
-    tolokaBtn,
-    h('span', { class: 'muted', style: 'font-size:12px;text-align:center' }, 'Щоб завантажити, потрібен обліковий запис на toloka.to')));
+    h('div', { style: 'display:flex;gap:10px;flex-wrap:wrap' }, tolokaBtn, torrentBtn),
+    h('span', { class: 'muted', style: 'font-size:12px;text-align:center' }, 'Торент завантажиться, якщо ви увійшли на toloka.to')));
 }
 
 function tagsFor(r) {
