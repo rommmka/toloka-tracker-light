@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#2F3FE6"/>
+  <!-- a white "bento" tile inside the 80% safe zone, so maskable crops keep it whole -->
+  <rect x="116" y="116" width="280" height="280" rx="64" fill="#FFFFFF"/>
+  <path d="M256 168 V290 M204 242 L256 294 L308 242" fill="none" stroke="#2F3FE6" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M190 340 H322" fill="none" stroke="#2F3FE6" stroke-width="34" stroke-linecap="round"/>
+</svg>
