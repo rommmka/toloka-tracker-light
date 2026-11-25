@@ -31,7 +31,9 @@ async function render() {
     if (a.dataset.route === route) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
+  document.body.dataset.route = route;
   if (route === 'search') searchInput.value = params.q ?? '';
+  else if (document.activeElement !== searchInput) searchInput.value = '';
   document.title = `${TITLE[route]} · Toloka`;
   const container = document.createElement('div');
   container.style.cssText = 'display:flex;flex-direction:column;gap:16px';
@@ -49,11 +51,16 @@ async function render() {
 
 window.addEventListener('hashchange', render);
 
-// header search → search among the collected releases
-document.getElementById('search-form').addEventListener('submit', (e) => {
-  e.preventDefault();
+// header search (desktop): typing opens "Пошук"; from then on views/search.js handles the field itself
+const openSearch = () => {
+  if (parseHash().route === 'search') return;
   const q = searchInput.value.trim();
   location.hash = q ? `#/search?q=${encodeURIComponent(q)}` : '#/search';
+};
+searchInput.addEventListener('input', () => { if (searchInput.value.trim()) openSearch(); });
+document.getElementById('search-form').addEventListener('submit', (e) => { e.preventDefault(); openSearch(); });
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); searchInput.blur(); }
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === '/' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName)) { e.preventDefault(); searchInput.focus(); }
