@@ -189,3 +189,17 @@ export function seriesCard(card) {
 export function empty(title, text, ...extra) {
   return h('div', { class: 'tile empty' }, h('b', {}, title), text, extra.length ? h('div', { style: 'margin-top:14px' }, extra) : null);
 }
+
+/** Placeholder cards while a page loads (shimmering, not clickable). */
+export function skeletonGrid(n = 8) {
+  return h('div', { class: 'grid-posters skel', 'aria-hidden': 'true' }, Array.from({ length: n }, () => h('div', { class: 'pcard' },
+    h('div', { class: 'poster-ph shimmer' }),
+    h('div', { class: 'bar shimmer', style: 'width:80%' }),
+    h('div', { class: 'bar shimmer', style: 'width:45%' }))));
+}
+
+/** The whole view while a slow page loads: a tile and a grid of placeholder cards. */
+export function pageSkeleton() {
+  return h('div', { class: 'skel', style: 'display:flex;flex-direction:column;gap:16px', 'aria-busy': 'true' },
+    h('div', { class: 'tile shimmer', style: 'height:110px' }), skeletonGrid());
+}

@@ -278,3 +278,36 @@ table.runs .num { text-align: right; }
   .tile.dark > .chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -18px; padding: 0 18px; scrollbar-width: none; }
   .tile.dark > .chips .scope { flex: none; }
 }
+
+/* ---------- loading & entrance animation ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+/* cards rise in one after another (the first dozen; later pages appear together) */
+.pcard, .scard, .result, .row > .tile { animation: rise .4s cubic-bezier(.2, .7, .3, 1) both; animation-delay: calc(var(--i, 0) * 35ms); }
+:is(.grid-posters, .grid-wide) > :nth-child(2) { --i: 1; }
+:is(.grid-posters, .grid-wide) > :nth-child(3) { --i: 2; }
+:is(.grid-posters, .grid-wide) > :nth-child(4) { --i: 3; }
+:is(.grid-posters, .grid-wide) > :nth-child(5) { --i: 4; }
+:is(.grid-posters, .grid-wide) > :nth-child(6) { --i: 5; }
+:is(.grid-posters, .grid-wide) > :nth-child(7) { --i: 6; }
+:is(.grid-posters, .grid-wide) > :nth-child(8) { --i: 7; }
+:is(.grid-posters, .grid-wide) > :nth-child(9) { --i: 8; }
+:is(.grid-posters, .grid-wide) > :nth-child(10) { --i: 9; }
+:is(.grid-posters, .grid-wide) > :nth-child(11) { --i: 10; }
+:is(.grid-posters, .grid-wide) > :nth-child(n+12) { --i: 11; }
+.row > .tile:nth-child(2) { --i: 2; }
+.row > .tile:nth-child(3) { --i: 4; }
+/* a poster shimmers until its image arrives; skeletons while a page loads */
+.shimmer, img.poster:not(.loaded) {
+  background: linear-gradient(100deg, var(--ph) 40%, color-mix(in srgb, var(--ph) 50%, var(--tile)) 50%, var(--ph) 60%) var(--ph);
+  background-size: 200% 100%; animation: shimmer 1.3s linear infinite;
+}
+.skel { pointer-events: none; }
+.skel .bar { height: 12px; border-radius: 6px; margin: 0 4px; }
+.skel .poster-ph { color: transparent; }
+.spinner { display: inline-block; flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+.search.busy::after { content: ""; flex: none; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; animation: spin .8s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pcard, .scard, .result, .row > .tile { animation: none; }
+  .shimmer, img.poster:not(.loaded), .spinner, .search.busy::after { animation: none; }
+}
