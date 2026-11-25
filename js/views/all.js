@@ -1,5 +1,7 @@
-// "Усі": every exported card, filters and sorting (in the browser, over feed.json), day groups.
+// "Релізи" (#/): the fresh block when the last run brought something (views/fresh.js), then every
+// exported card with filters and sorting (in the browser, over feed.json), grouped by day.
 
+import { freshBlock } from './fresh.js';
 import { h, loadFeed, posterCard, dayLabel, empty, norm, ratingOf, maxSeeds, tolokaSearchUrl } from '../ui.js';
 
 const KEY = 'toloka.allFilters';
@@ -122,6 +124,7 @@ export async function renderAll(el, { params }) {
   qInput.addEventListener('input', () => { clearTimeout(qTimer); qTimer = setTimeout(() => { q = qInput.value.trim(); load(); }, 200); });
 
   el.append(
+    ...freshBlock(feed),
     h('section', { class: 'tile filters', 'aria-label': 'Фільтри' },
       qInput,
       seg,

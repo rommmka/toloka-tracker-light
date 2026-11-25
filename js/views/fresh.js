@@ -1,15 +1,17 @@
-// "Сьогодні": what the last run brought, best-seeded release, new cards by category.
+// Fresh block on top of "Релізи": what the last run brought, best-seeded release, new cards by category.
+// Nothing new since the last run → no block at all, the page is just the full list.
 
 import {
-  h, loadFeed, posterEl, posterCard, seriesCard, fmtSize, fmtDay, plural, ratingOf,
-  visibleReleases, defaultRelease, empty, seasonText,
+  h, posterEl, posterCard, seriesCard, fmtSize, fmtDay, plural, ratingOf,
+  visibleReleases, defaultRelease, seasonText,
 } from '../ui.js';
 
-export async function renderToday(el) {
-  const feed = await loadFeed();
+/** Elements of the fresh block (empty array when the last run brought nothing). */
+export function freshBlock(feed) {
   const cards = feed.groups.filter((c) => c.isNew || c.isUpdated);
   const run = feed.lastRun;
 
+  if (!cards.length) return [];
   const newCards = cards.filter((c) => c.isNew);
   const byCat = (cat) => cards.filter((c) => c.category === cat);
   const movies = cards.filter((c) => c.kind === 'movie' && c.category !== 'cartoons');
@@ -28,9 +30,8 @@ export async function renderToday(el) {
     h('div', { class: 'chips' },
       movies.length ? h('span', { class: 'hero-chip' }, `${movies.length} ${plural(movies.length, 'фільм', 'фільми', 'фільмів')}`) : null,
       series.length ? h('span', { class: 'hero-chip' }, `${series.length} ${plural(series.length, 'серіал', 'серіали', 'серіалів')}${updatedSeries ? ` · ${updatedSeries} з новими серіями` : ''}`) : null,
-      cartoons.length ? h('span', { class: 'hero-chip' }, `${cartoons.length} ${plural(cartoons.length, 'мультфільм', 'мультфільми', 'мультфільмів')}`) : null,
-      !cards.length ? h('span', { class: 'hero-chip' }, 'з останнього збору нічого нового') : null),
-    cards.length ? h('div', { class: 'strip' }, cards.slice(0, 8).map((c) => h('a', { href: `#/g/${c.id}`, title: c.titleUa }, posterEl(c)))) : null);
+      cartoons.length ? h('span', { class: 'hero-chip' }, `${cartoons.length} ${plural(cartoons.length, 'мультфільм', 'мультфільми', 'мультфільмів')}`) : null),
+    h('div', { class: 'strip' }, cards.slice(0, 8).map((c) => h('a', { href: `#/g/${c.id}`, title: c.titleUa }, posterEl(c)))));
 
   const tiles = [hero];
 
@@ -38,17 +39,11 @@ export async function renderToday(el) {
   const top = [...cards].sort((a, b) => topSeeds(b) - topSeeds(a))[0];
   if (top && topSeeds(top) > 0) tiles.push(topSeedsTile(top));
 
-  el.append(h('div', { class: 'row stretch' }, tiles));
-
-  if (!cards.length) {
-    el.append(empty('Нових релізів немає', 'Наступний збір — щодня о 10:00. Усе зібране раніше є у розділі «Усі».',
-      h('a', { class: 'btn ink', href: '#/all' }, 'Відкрити «Усі»')));
-    return;
-  }
-
-  if (movies.length) el.append(section('Фільми', movies, (c) => posterCard(c), 'grid-posters'));
-  if (series.length) el.append(section('Серіали', series, seriesCard, 'grid-wide'));
-  if (cartoons.length) el.append(section('Мультики', cartoons, (c) => (c.kind === 'series' ? seriesCard(c) : posterCard(c)), cartoons.some((c) => c.kind === 'series') ? 'grid-wide' : 'grid-posters'));
+  const out = [h('div', { class: 'row stretch' }, tiles)];
+  if (movies.length) out.push(section('Нові фільми', movies, (c) => posterCard(c), 'grid-posters'));
+  if (series.length) out.push(section('Нові серіали', series, seriesCard, 'grid-wide'));
+  if (cartoons.length) out.push(section('Нові мультики', cartoons, (c) => (c.kind === 'series' ? seriesCard(c) : posterCard(c)), cartoons.some((c) => c.kind === 'series') ? 'grid-wide' : 'grid-posters'));
+  return out;
 }
 
 const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);

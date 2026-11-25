@@ -1,6 +1,5 @@
-// Router and shell: #/ (today), #/search, #/all, #/g/<id>.
+// Router and shell: #/ (releases: fresh block + full list; #/all is an old alias), #/search, #/g/<id>.
 
-import { renderToday } from './views/today.js';
 import { renderAll } from './views/all.js';
 import { renderDetail } from './views/detail.js';
 import { renderSearch } from './views/search.js';
@@ -16,12 +15,12 @@ function parseHash() {
   const params = Object.fromEntries(new URLSearchParams(query));
   const m = p.match(/^\/g\/(\d+)$/);
   if (m) return { route: 'detail', id: Number(m[1]), params };
-  const route = { '/': 'today', '/search': 'search', '/all': 'all' }[p] ?? 'today';
+  const route = { '/search': 'search' }[p] ?? 'all';
   return { route, params };
 }
 
-const RENDER = { today: renderToday, search: renderSearch, all: renderAll, detail: renderDetail };
-const TITLE = { today: 'Сьогодні', search: 'Пошук', all: 'Усі релізи', detail: 'Реліз' };
+const RENDER = { search: renderSearch, all: renderAll, detail: renderDetail };
+const TITLE = { search: 'Пошук', all: 'Релізи', detail: 'Реліз' };
 
 async function render() {
   const seq = ++renderSeq;
