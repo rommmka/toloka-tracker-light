@@ -1,5 +1,6 @@
-// Fresh block on top of "Релізи": what the last run brought, best-seeded release, new cards by category.
-// Nothing new since the last run → no block at all, the page is just the full list.
+// Fresh block on top of "Релізи": everything new since the morning digest's window (feed.freshSince, the same
+// cards the Telegram digest listed, plus whatever later runs found), best-seeded release,
+// new cards by category. Nothing new in that window → no block at all, the page is just the full list.
 
 import {
   h, posterEl, posterCard, seriesCard, fmtSize, fmtDay, plural, ratingOf,
@@ -23,7 +24,9 @@ export function freshBlock(feed) {
   const count = newCards.length;
   const hero = h('section', { class: 'tile dark', style: 'flex:2 1 560px', 'aria-label': 'Підсумок дня' },
     h('span', { style: 'font-size:14px;font-weight:600;color:var(--hero-muted)' },
-      run ? `${capital(fmtDay(run.startedAt))} · зібрано о ${new Date(run.startedAt).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}` : 'Ще не було жодного збору'),
+      feed.freshSince
+        ? `Нове з ${dayMonth(feed.freshSince)}, ${hhmm(feed.freshSince)} · останній збір ${dayMonth(run.startedAt) === dayMonth(feed.freshSince) ? '' : `${dayMonth(run.startedAt)} `}о ${hhmm(run.startedAt)}`
+        : run ? `${capital(fmtDay(run.startedAt))} · зібрано о ${hhmm(run.startedAt)}` : 'Ще не було жодного збору'),
     h('div', { class: 'hero-count' },
       h('b', {}, String(count)),
       h('span', {}, plural(count, 'новий', 'нові', 'нових'), h('br'), plural(count, 'реліз', 'релізи', 'релізів'))),
@@ -47,6 +50,8 @@ export function freshBlock(feed) {
 }
 
 const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const hhmm = (iso) => new Date(iso).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+const dayMonth = (iso) => new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 const topSeeds = (c) => Math.max(0, ...visibleReleases(c).map((r) => r.seeders ?? 0));
 
 function section(title, cards, render, gridClass) {
