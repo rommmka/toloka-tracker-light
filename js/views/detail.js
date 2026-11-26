@@ -80,7 +80,8 @@ export async function renderDetail(el, { id }) {
           pic = h('img', { src: a.photo, alt: '', loading: 'lazy', decoding: 'async' });
           pic.addEventListener('error', () => pic.replaceWith(face()), { once: true });
         }
-        return h('span', {}, pic, a.name, a.character ? h('small', {}, a.character) : null);
+        const inner = [pic, a.name, a.character ? h('small', {}, a.character) : null];
+        return a.url ? h('a', { href: a.url, target: '_blank', rel: 'noopener', title: `${a.name} на TMDB` }, ...inner) : h('span', {}, ...inner);
       }))));
   }
 

@@ -190,11 +190,15 @@ img { display: block; }
 .dl-info dt { color: var(--muted); }
 .dl-info dd { margin: 0; font-weight: 700; }
 .cast { display: flex; gap: 18px; flex-wrap: wrap; }
-.cast span { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; font-size: 13px; font-weight: 600; text-align: center; line-height: 1.2; }
+.cast span, .cast a { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; font-size: 13px; font-weight: 600; text-align: center; line-height: 1.2; }
 .cast i, .cast img { width: 72px; height: 72px; border-radius: 50%; flex: none; }
 .cast i { display: grid; place-items: center; font: 800 20px var(--display); font-style: normal; color: #0D1014; }
 .cast img { object-fit: cover; object-position: center 20%; background: var(--ph); }
 .cast small { font-size: 12px; font-weight: 500; color: var(--muted); margin-top: -4px; }
+.cast a { color: inherit; text-decoration: none; border-radius: 12px; }
+.cast a:hover { color: var(--accent); }
+.cast a:hover img { filter: brightness(1.06); }
+.cast a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .opts { display: flex; flex-direction: column; gap: 8px; border: 0; margin: 0; padding: 0; }
 .opt { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 14px; border-radius: var(--r-m); background: var(--tile-2); cursor: pointer; }
 .opt:has(input:checked) { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
@@ -247,7 +251,7 @@ table.runs .num { text-align: right; }
   .d-hero .poster, .d-hero .poster-ph { width: 110px; }
   .d-hero h1 { font-size: 30px; }
   .trailer { aspect-ratio: 16 / 9; border-radius: var(--r-l); }
-  .cast span { width: 64px; font-size: 11px; }
+  .cast span, .cast a { width: 64px; font-size: 11px; }
   .cast i, .cast img { width: 52px; height: 52px; }
   .cast i { font-size: 15px; }
   .eps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
